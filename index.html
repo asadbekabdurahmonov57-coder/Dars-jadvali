@@ -61,7 +61,6 @@
       gap: 6px;
     }
 
-    /* Maxfiy badge - bilinmaydi, tap highlight va outline yo'q */
     .group-badge {
       background: #0284c7;
       color: #ffffff;
@@ -90,7 +89,7 @@
 
     .landscape-table {
       width: 100%;
-      min-width: 900px;
+      min-width: 1050px; /* 6 kun uchun kenglik oshirildi */
       border-collapse: collapse;
       border: 2px solid #475569;
       background: #1e293b;
@@ -257,7 +256,7 @@
     .btn-exit-admin { background: #dc2626; color: #fff; margin-right: auto; }
   </style>
 
-  <!-- Firebase App & Database Compat SDKs -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
@@ -283,6 +282,7 @@
           <th>Chorshanba</th>
           <th>Payshanba</th>
           <th>Juma</th>
+          <th>Shanba</th>
         </tr>
       </thead>
       <tbody id="tableBody"></tbody>
@@ -301,7 +301,7 @@
     </div>
   </div>
 
-  <!-- Dars tahrirlash modal (Chiqish tugmasi bor) -->
+  <!-- Tahrirlash modal -->
   <div class="modal-overlay" id="editModal">
     <div class="modal">
       <h3>Darsni Tahrirlash</h3>
@@ -318,8 +318,8 @@
       <input type="text" id="editLink" placeholder="https://...">
 
       <div class="modal-btns">
-        <button class="btn-exit-admin" onclick="logoutAdmin()">Adminchadan chiqish</button>
-        <button class="btn-cancel" onclick="closeModals()">Chiqish</button>
+        <button class="btn-exit-admin" onclick="logoutAdmin()">Chiqish</button>
+        <button class="btn-cancel" onclick="closeModals()">Yopish</button>
         <button class="btn-save" onclick="saveLessonData()">Saqlash</button>
       </div>
     </div>
@@ -340,15 +340,13 @@
   </div>
 
   <script>
-    // 1. Firebase Initsializatsiyasi
     const firebaseConfig = {
       databaseURL: "https://tabrik-6a19d-default-rtdb.firebaseio.com"
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const scheduleRef = db.ref('schedule_645_24');
+    const scheduleRef = db.ref('schedule_645_24_v3');
 
-    // Boshlang'ich (default) jadval ma'lumotlari
     let defaultData = {
       times: [
         { name: "1-JUFTLIK", time: "08:30 - 09:50" },
@@ -357,39 +355,46 @@
         { name: "4-JUFTLIK", time: "13:30 - 14:50" }
       ],
       lessons: [
-        // Dushanba
+        // Dushanba (0)
         [
           { subject: "Dasturlash Asoslari", teacher: "prof. A. Alimov", room: "Zoom", link: "https://zoom.us/", type: "zoom" },
           { subject: "Oliy Matematika", teacher: "O. Sobirov", room: "201-xona", link: "https://meet.google.com/", type: "meet" },
           { subject: "Fizika", teacher: "S. Karimov", room: "305-xona", link: "https://zoom.us/", type: "zoom" },
           { subject: "Bo'sh Vaqt", teacher: "", room: "", link: "", type: "empty" }
         ],
-        // Seshanba
+        // Seshanba (1)
         [
           { subject: "Ma'lumotlar Bazasi", teacher: "doc. B. Karimov", room: "Google Meet", link: "https://meet.google.com/", type: "meet" },
           { subject: "Web Dasturlash", teacher: "D. Rahimov", room: "Zoom", link: "https://zoom.us/", type: "zoom" },
           { subject: "Algoritmlar", teacher: "N. Qosimov", room: "MS Teams", link: "https://teams.microsoft.com/", type: "teams" },
           { subject: "Chet Tili", teacher: "M. Rustamova", room: "105-xona", link: "https://t.me/", type: "telegram" }
         ],
-        // Chorshanba
+        // Chorshanba (2)
         [
           { subject: "Kompyuter Tarmoqlari", teacher: "S. Jalolov", room: "MS Teams", link: "https://teams.microsoft.com/", type: "teams" },
           { subject: "Kiberxavfsizlik", teacher: "E. Zokirov", room: "Zoom", link: "https://zoom.us/", type: "zoom" },
           { subject: "Operatsion Tizimlar", teacher: "I. Tursunov", room: "Google Meet", link: "https://meet.google.com/", type: "meet" },
           { subject: "Bo'sh Vaqt", teacher: "", room: "", link: "", type: "empty" }
         ],
-        // Payshanba
+        // Payshanba (3)
         [
           { subject: "Mikroprotsessorlar", teacher: "N. Qosimov", room: "Zoom Online", link: "https://zoom.us/", type: "zoom" },
           { subject: "Sun'iy Intellekt", teacher: "A. Tursunov", room: "MS Teams", link: "https://teams.microsoft.com/", type: "teams" },
           { subject: "Diskret Matematika", teacher: "O. Sobirov", room: "202-xona", link: "https://meet.google.com/", type: "meet" },
           { subject: "Jismoniy Tarbiya", teacher: "B. Yo'ldoshev", room: "Sport Zali", link: "https://t.me/", type: "telegram" }
         ],
-        // Juma
+        // Juma (4)
         [
           { subject: "Chet Tili (Ingliz tili)", teacher: "M. Rustamova", room: "Telegram", link: "https://t.me/", type: "telegram" },
           { subject: "Falsafa", teacher: "G. Ismoilova", room: "108-xona", link: "https://meet.google.com/", type: "meet" },
           { subject: "Aprel Loyihasi", teacher: "K. Nosirov", room: "Zoom", link: "https://zoom.us/", type: "zoom" },
+          { subject: "Bo'sh Vaqt", teacher: "", room: "", link: "", type: "empty" }
+        ],
+        // Shanba (5)
+        [
+          { subject: "Mustaqil Ta'lim", teacher: "", room: "Online", link: "https://t.me/", type: "telegram" },
+          { subject: "Bo'sh Vaqt", teacher: "", room: "", link: "", type: "empty" },
+          { subject: "Bo'sh Vaqt", teacher: "", room: "", link: "", type: "empty" },
           { subject: "Bo'sh Vaqt", teacher: "", room: "", link: "", type: "empty" }
         ]
       ]
@@ -401,13 +406,11 @@
     let currentEditCol = null;
     let currentEditTimeIndex = null;
 
-    // 2. Firebase Database listener (Onlayn real-vaqt sinxronizatsiyasi)
     scheduleRef.on('value', (snapshot) => {
       const val = snapshot.val();
       if (val) {
         scheduleData = val;
       } else {
-        // Baza bo'sh bo'lsa boshlang'ich ma'lumotni kiritib qo'yamiz
         scheduleRef.set(defaultData);
       }
       renderTable();
@@ -438,7 +441,8 @@
         `;
         tr.appendChild(tdTime);
 
-        for (let c = 0; c < 5; c++) {
+        // 6 kun (Dushanba - Shanba, index 0 dan 5 gacha)
+        for (let c = 0; c < 6; c++) {
           const td = document.createElement('td');
           const lesson = (scheduleData.lessons && scheduleData.lessons[c]) ? scheduleData.lessons[c][r] : null;
 
@@ -481,7 +485,6 @@
       }
     }
 
-    // Maxfiy admin trigger
     let clickCount = 0;
     document.getElementById('adminTrigger').onclick = () => {
       clickCount++;
@@ -537,7 +540,6 @@
       document.getElementById('editModal').style.display = 'flex';
     }
 
-    // 3. O'zgarishlarni Firebase Onlayn Bazaga Saqlash
     function saveLessonData() {
       const subject = document.getElementById('editSubject').value.trim();
       const teacher = document.getElementById('editTeacher').value.trim();
