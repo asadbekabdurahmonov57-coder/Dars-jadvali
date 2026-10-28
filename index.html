@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>645-24 Guruhi Dars Jadvali</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #0b1120;
+      color: #f1f5f9;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    header {
+      background: #1e293b;
+      padding: 6px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #334155;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-title i {
+      font-size: 16px;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+      padding: 4px 6px;
+      border-radius: 6px;
+    }
+
+    .brand-title h1 {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Maxfiy badge - bilinmaydi, tap highlight va outline yo'q */
+    .group-badge {
+      background: #0284c7;
+      color: #ffffff;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 11px;
+      cursor: default;
+      outline: none;
+      border: none;
+      box-shadow: none;
+    }
+
+    .notice {
+      font-size: 10px;
+      color: #94a3b8;
+    }
+
+    .table-container {
+      flex: 1;
+      width: 100%;
+      overflow: auto;
+      padding: 4px;
+      background-color: #0f172a;
+    }
+
+    .landscape-table {
+      width: 100%;
+      min-width: 900px;
+      border-collapse: collapse;
+      border: 2px solid #475569;
+      background: #1e293b;
+      table-layout: fixed;
+    }
+
+    .landscape-table th, 
+    .landscape-table td {
+      border: 2px solid #475569;
+      padding: 2px;
+      text-align: center;
+      position: relative;
+    }
+
+    .landscape-table th {
+      background: #0f172a;
+      color: #38bdf8;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      height: 26px;
+    }
+
+    .landscape-table th.time-column {
+      width: 95px;
+      background: #0284c7;
+      color: #ffffff;
+    }
+
+    .time-slot {
+      background: #1e293b;
+      height: 72px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .pair-name {
+      font-weight: 800;
+      font-size: 10px;
+      color: #f3f4f6;
+    }
+
+    .pair-time {
+      font-size: 9px;
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    .lesson-link {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 100%;
+      height: 72px;
+      padding: 3px 5px;
+      text-decoration: none;
+      border-radius: 4px;
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .lesson-link.zoom { background: linear-gradient(135deg, #1e3a8a, #1d4ed8); }
+    .lesson-link.meet { background: linear-gradient(135deg, #064e3b, #047857); }
+    .lesson-link.teams { background: linear-gradient(135deg, #4c1d95, #6d28d9); }
+    .lesson-link.telegram { background: linear-gradient(135deg, #0c4a6e, #0284c7); }
+    .lesson-link.other { background: linear-gradient(135deg, #334155, #475569); }
+
+    .lesson-subject {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #ffffff;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .lesson-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      text-align: left;
+    }
+
+    .lesson-meta span {
+      font-size: 8.5px;
+      color: #e2e8f0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .action-btn {
+      align-self: flex-end;
+      background: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      padding: 1px 3px;
+      border-radius: 2px;
+      font-size: 7.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .empty-slot {
+      background: #0f172a;
+      color: #475569;
+      font-size: 10px;
+      font-weight: 600;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Modal Oynalar */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal {
+      background: #1e293b;
+      border: 1px solid #475569;
+      padding: 14px;
+      border-radius: 8px;
+      width: 290px;
+    }
+    .modal h3 {
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: #38bdf8;
+    }
+    .modal input {
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 5px;
+      background: #0f172a;
+      border: 1px solid #475569;
+      color: #fff;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+    .modal-btns {
+      display: flex;
+      justify-content: flex-end;
+      gap: 5px;
+    }
+    .modal-btns button {
+      padding: 3px 8px;
+      border-radius: 3px;
+      border: none;
+      font-weight: 600;
+      font-size: 10px;
+      cursor: pointer;
+    }
+    .btn-cancel { background: #334155; color: #fff; }
+    .btn-save { background: #0284c7; color: #fff; }
+    .btn-exit-admin { background: #dc2626; color: #fff; margin-right: auto; }
+  </style>
+
+  <!-- Firebase App & Database Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+  <header>
+    <div class="brand-title">
+      <i class="fa-solid fa-calendar-days"></i>
+      <h1>DARS JADVALI <span class="group-badge" id="adminTrigger">645-24</span></h1>
+    </div>
+    <div class="notice">
+      Ustiga bosing - darsga o'tadi
+    </div>
+  </header>
+
+  <div class="table-container">
+    <table class="landscape-table">
+      <thead>
+        <tr>
+          <th class="time-column">Vaqt / Kun</th>
+          <th>Dushanba</th>
+          <th>Seshanba</th>
+          <th>Chorshanba</th>
+          <th>Payshanba</th>
+          <th>Juma</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Parol modal -->
+  <div class="modal-overlay" id="passwordModal">
+    <div class="modal">
+      <h3>Admin Parolini Kiriting</h3>
+      <input type="password" id="adminPasswordInput" placeholder="Parol (64524)">
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="closeModals()">Bekor qilish</button>
+        <button class="btn-save" onclick="checkPassword()">Kirish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dars tahrirlash modal (Chiqish tugmasi bor) -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal">
+      <h3>Darsni Tahrirlash</h3>
+      <label style="font-size:9px; color:#94a3b8;">Fan nomi:</label>
+      <input type="text" id="editSubject">
+      
+      <label style="font-size:9px; color:#94a3b8;">O'qituvchi:</label>
+      <input type="text" id="editTeacher">
+      
+      <label style="font-size:9px; color:#94a3b8;">Xona / Platforma:</label>
+      <input type="text" id="editRoom">
+      
+      <label style="font-size:9px; color:#94a3b8;">Dars Linki:</label>
+      <input type="text" id="editLink" placeholder="https://...">
+
+      <div class="modal-btns">
+        <button class="btn-exit-admin" onclick="logoutAdmin()">Adminchadan chiqish</button>
+        <button class="btn-cancel" onclick="closeModals()">Chiqish</button>
+        <button class="btn-save" onclick="saveLessonData()">Saqlash</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vaqt tahrirlash modal -->
+  <div class="modal-overlay" id="timeEditModal">
+    <div class="modal">
+      <h3>Juftlik Vaqtini O'zgartirish</h3>
+      <input type="text" id="editPairName" placeholder="Masalan: 1-JUFTLIK">
+      <input type="text" id="editPairTime" placeholder="Masalan: 08:30 - 09:50">
+      <div class="modal-btns">
+        <button class="btn-exit-admin" onclick="logoutAdmin()">Chiqish</button>
+        <button class="btn-cancel" onclick="closeModals()">Yopish</button>
+        <button class="btn-save" onclick="saveTimeData()">Saqlash</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 1. Firebase Initsializatsiyasi
+    const firebaseConfig = {
+      databaseURL: "https://tabrik-6a19d-default-rtdb.firebaseio.com"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const scheduleRef = db.ref('schedule_645_24');
+
+    // Boshlang'ich (default) jadval ma'lumotlari
+    let defaultData = {
+      times: [
+        { name: "1-JUFTLIK", time: "08:30 - 09:50" },
+        { name: "2-JUFTLIK", time: "10:00 - 11:20" },
+        { name: "3-JUFTLIK", time: "11:30 - 12:50" },
+        { name: "4-JUFTLIK", time: "13:30 - 14:50" }
+      ],
+      lessons: [
+        // Dushanba
+        [
+          { subject: "Dasturlash Asoslari", teacher: "prof. A. Alimov", room: "Zoom", link: "https://zoom.us/", type: "zoom" },
+          { subject: "Oliy Matematika", teacher: "O. Sobirov", room: "201-xona", link: "https://meet.google.com/", type: "meet" },
+          { subject: "Fizika", teacher: "S. Karimov", room: "305-xona", link: "https://zoom.us/", type: "zoom" },
+          { subject: "Bo'sh Vaqt", teacher: "", room: "", link: "", type: "empty" }
+        ],
+        // Seshanba
+        [
+          { subject: "Ma'lumotlar Bazasi", teacher: "doc. B. Karimov", room: "Google Meet", link: "https://meet.google.com/", type: "meet" },
+          { subject: "Web Dasturlash", teacher: "D. Rahimov", room: "Zoom", link: "https://zoom.us/", type: "zoom" },
+          { subject: "Algoritmlar", teacher: "N. Qosimov", room: "MS Teams", link: "https://teams.microsoft.com/", type: "teams" },
+          { subject: "Chet Tili", teacher: "M. Rustamova", room: "105-xona", link: "https://t.me/", type: "telegram" }
+        ],
+        // Chorshanba
+        [
+          { subject: "Kompyuter Tarmoqlari", teacher: "S. Jalolov", room: "MS Teams", link: "https://teams.microsoft.com/", type: "teams" },
+          { subject: "Kiberxavfsizlik", teacher: "E. Zokirov", room: "Zoom", link: "https://zoom.us/", type: "zoom" },
+          { subject: "Operatsion Tizimlar", teacher: "I. Tursunov", room: "Google Meet", link: "https://meet.google.com/", type: "meet" },
+          { subject: "Bo'sh Vaqt", teacher: "", room: "", link: "", type: "empty" }
+        ],
+        // Payshanba
+        [
+          { subject: "Mikroprotsessorlar", teacher: "N. Qosimov", room: "Zoom Online", link: "https://zoom.us/", type: "zoom" },
+          { subject: "Sun'iy Intellekt", teacher: "A. Tursunov", room: "MS Teams", link: "https://teams.microsoft.com/", type: "teams" },
+          { subject: "Diskret Matematika", teacher: "O. Sobirov", room: "202-xona", link: "https://meet.google.com/", type: "meet" },
+          { subject: "Jismoniy Tarbiya", teacher: "B. Yo'ldoshev", room: "Sport Zali", link: "https://t.me/", type: "telegram" }
+        ],
+        // Juma
+        [
+          { subject: "Chet Tili (Ingliz tili)", teacher: "M. Rustamova", room: "Telegram", link: "https://t.me/", type: "telegram" },
+          { subject: "Falsafa", teacher: "G. Ismoilova", room: "108-xona", link: "https://meet.google.com/", type: "meet" },
+          { subject: "Aprel Loyihasi", teacher: "K. Nosirov", room: "Zoom", link: "https://zoom.us/", type: "zoom" },
+          { subject: "Bo'sh Vaqt", teacher: "", room: "", link: "", type: "empty" }
+        ]
+      ]
+    };
+
+    let scheduleData = defaultData;
+    let isAdmin = false;
+    let currentEditRow = null;
+    let currentEditCol = null;
+    let currentEditTimeIndex = null;
+
+    // 2. Firebase Database listener (Onlayn real-vaqt sinxronizatsiyasi)
+    scheduleRef.on('value', (snapshot) => {
+      const val = snapshot.val();
+      if (val) {
+        scheduleData = val;
+      } else {
+        // Baza bo'sh bo'lsa boshlang'ich ma'lumotni kiritib qo'yamiz
+        scheduleRef.set(defaultData);
+      }
+      renderTable();
+    });
+
+    function cleanUrl(url) {
+      if (!url) return "#";
+      return url.trim().replace(/\s+/g, '');
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+
+      for (let r = 0; r < 4; r++) {
+        const tr = document.createElement('tr');
+
+        const tdTime = document.createElement('td');
+        tdTime.className = 'time-slot';
+        if (isAdmin) {
+          tdTime.style.cursor = 'pointer';
+          tdTime.onclick = () => openTimeEditModal(r);
+        }
+        tdTime.innerHTML = `
+          <span class="pair-name">${scheduleData.times[r].name}</span>
+          <span class="pair-time">${scheduleData.times[r].time}</span>
+          ${isAdmin ? '<div style="font-size:7px; color:#38bdf8;">[Edit]</div>' : ''}
+        `;
+        tr.appendChild(tdTime);
+
+        for (let c = 0; c < 5; c++) {
+          const td = document.createElement('td');
+          const lesson = (scheduleData.lessons && scheduleData.lessons[c]) ? scheduleData.lessons[c][r] : null;
+
+          if (!lesson || lesson.type === 'empty' || lesson.subject === "Bo'sh Vaqt") {
+            td.innerHTML = `<div class="empty-slot">${isAdmin ? 'Bo\'sh' : 'Bo\'sh'}</div>`;
+            if (isAdmin) {
+              td.style.cursor = 'pointer';
+              td.onclick = () => openEditModal(c, r);
+            }
+          } else {
+            if (isAdmin) {
+              td.style.cursor = 'pointer';
+              td.innerHTML = `
+                <div class="lesson-link ${lesson.type}" onclick="openEditModal(${c}, ${r})">
+                  <div class="lesson-subject">${lesson.subject}</div>
+                  <div class="lesson-meta">
+                    <span><i class="fa-solid fa-user-tie"></i> ${lesson.teacher}</span>
+                    <span><i class="fa-solid fa-location-dot"></i> ${lesson.room}</span>
+                  </div>
+                  <div class="action-btn" style="background:#dc2626;">Edit</div>
+                </div>
+              `;
+            } else {
+              let cleanLink = cleanUrl(lesson.link);
+              td.innerHTML = `
+                <a href="${cleanLink}" target="_blank" class="lesson-link ${lesson.type}">
+                  <div class="lesson-subject">${lesson.subject}</div>
+                  <div class="lesson-meta">
+                    <span><i class="fa-solid fa-user-tie"></i> ${lesson.teacher}</span>
+                    <span><i class="fa-solid fa-location-dot"></i> ${lesson.room}</span>
+                  </div>
+                  <div class="action-btn">Kirish <i class="fa-solid fa-arrow-right"></i></div>
+                </a>
+              `;
+            }
+          }
+          tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+      }
+    }
+
+    // Maxfiy admin trigger
+    let clickCount = 0;
+    document.getElementById('adminTrigger').onclick = () => {
+      clickCount++;
+      if (clickCount >= 5) {
+        clickCount = 0;
+        if (isAdmin) {
+          isAdmin = false;
+          alert("Admin rejimi yopildi.");
+          renderTable();
+        } else {
+          document.getElementById('passwordModal').style.display = 'flex';
+          document.getElementById('adminPasswordInput').value = '';
+          document.getElementById('adminPasswordInput').focus();
+        }
+      }
+      setTimeout(() => { clickCount = 0; }, 3000);
+    };
+
+    function checkPassword() {
+      const pass = document.getElementById('adminPasswordInput').value;
+      if (pass === "64524" || pass === "1234") {
+        isAdmin = true;
+        closeModals();
+        renderTable();
+      } else {
+        alert("Parol noto'g'ri!");
+      }
+    }
+
+    function logoutAdmin() {
+      isAdmin = false;
+      closeModals();
+      renderTable();
+      alert("Admin rejimidan chiqildi.");
+    }
+
+    function closeModals() {
+      document.getElementById('passwordModal').style.display = 'none';
+      document.getElementById('editModal').style.display = 'none';
+      document.getElementById('timeEditModal').style.display = 'none';
+    }
+
+    function openEditModal(col, row) {
+      currentEditCol = col;
+      currentEditRow = row;
+      const lesson = scheduleData.lessons[col][row] || {};
+
+      document.getElementById('editSubject').value = (lesson.subject === "Bo'sh Vaqt") ? "" : (lesson.subject || "");
+      document.getElementById('editTeacher').value = lesson.teacher || "";
+      document.getElementById('editRoom').value = lesson.room || "";
+      document.getElementById('editLink').value = lesson.link || "";
+
+      document.getElementById('editModal').style.display = 'flex';
+    }
+
+    // 3. O'zgarishlarni Firebase Onlayn Bazaga Saqlash
+    function saveLessonData() {
+      const subject = document.getElementById('editSubject').value.trim();
+      const teacher = document.getElementById('editTeacher').value.trim();
+      const room = document.getElementById('editRoom').value.trim();
+      const link = cleanUrl(document.getElementById('editLink').value);
+
+      let type = "other";
+      if (link.includes("zoom")) type = "zoom";
+      else if (link.includes("meet")) type = "meet";
+      else if (link.includes("teams")) type = "teams";
+      else if (link.includes("t.me")) type = "telegram";
+      if (!subject) type = "empty";
+
+      scheduleData.lessons[currentEditCol][currentEditRow] = {
+        subject: subject || "Bo'sh Vaqt",
+        teacher: teacher,
+        room: room,
+        link: link,
+        type: type
+      };
+
+      scheduleRef.set(scheduleData);
+      closeModals();
+    }
+
+    function openTimeEditModal(index) {
+      currentEditTimeIndex = index;
+      document.getElementById('editPairName').value = scheduleData.times[index].name;
+      document.getElementById('editPairTime').value = scheduleData.times[index].time;
+      document.getElementById('timeEditModal').style.display = 'flex';
+    }
+
+    function saveTimeData() {
+      const name = document.getElementById('editPairName').value.trim();
+      const time = document.getElementById('editPairTime').value.trim();
+
+      scheduleData.times[currentEditTimeIndex] = { name, time };
+      scheduleRef.set(scheduleData);
+      closeModals();
+    }
+  </script>
+</body>
+</html>
